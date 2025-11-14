@@ -1,7 +1,10 @@
 import os
+import dotenv
 import secrets
 import requests
 from flask import Flask, request, redirect, session, jsonify, render_template
+
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
