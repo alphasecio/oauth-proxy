@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Proxy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 OAuth Proxy</h1>
+            {% if authenticated %}
+            <span class="status-badge authenticated">✓ Authenticated</span>
+            {% else %}
+            <span class="status-badge not-authenticated">⚠ Not Authenticated</span>
+            {% endif %}
+        </div>
+        
+        {% if authenticated %}
+        <div class="token-display">
+            <div class="token-label">Access Token</div>
+            <div class="token-value">
+                <span id="token">{{ token }}</span>
+                <button class="copy-btn" onclick="copyToken()" title="Copy token">
+                    <svg fill="white" viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            💡 Token is stored securely in your session. Use it in your applications or API calls.
+        </div>
+        
+        <a href="/logout" class="btn btn-secondary">Logout</a>
+        {% else %}
+        <a href="/login" class="btn btn-primary">
+            Authorize with {{ provider_name }}
+        </a>
+        
+        <div class="info-box">
+            Click above to authenticate. You'll be redirected to {{ provider_name }} to authorize this application.
+        </div>
+        {% endif %}
+        
+        <a href="/config" class="config-link">⚙️ Configure OAuth Credentials</a>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
