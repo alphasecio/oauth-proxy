@@ -38,12 +38,8 @@
         <a href="/logout" class="btn btn-secondary">Logout</a>
         {% else %}
         <a href="/login" class="btn btn-primary">
-            Authorize with {{ provider_name }}
+            Sign in with {{ provider_name }}
         </a>
-        
-        <div class="info-box">
-            Click above to authenticate. You'll be redirected to {{ provider_name }} to authorize this application.
-        </div>
         {% endif %}
         
         <a href="/config" class="config-link">⚙️ Configure OAuth Credentials</a>
