@@ -1,0 +1,256 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.status-badge.authenticated {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.not-authenticated {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.token-display {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    word-break: break-all;
+    position: relative;
+}
+
+.token-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+}
+
+.token-value {
+    color: #212529;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.copy-btn {
+    background: #667eea;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.copy-btn:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+}
+
+.copy-btn svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.copy-btn.copied {
+    background: #28a745;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #24292e;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1b1f23;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #2196F3;
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #0c5460;
+}
+
+.config-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.config-link:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Config page styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+input[type="text"],
+input[type="password"] {
+    font-family: 'Courier New', monospace;
+}
+
+select {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+    cursor: pointer;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: normal;
+}
+
+.provider-info {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #856404;
+}
+
+.provider-info a {
+    color: #856404;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.provider-info a:hover {
+    text-decoration: underline;
+}
