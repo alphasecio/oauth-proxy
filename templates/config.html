@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Configuration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ OAuth Configuration</h1>
+        <p class="subtitle">Configure your OAuth provider credentials</p>
+        
+        <form method="POST" action="/config">
+            <div class="form-group">
+                <label for="provider">OAuth Provider</label>
+                <select id="provider" name="provider" required onchange="updateProviderInfo()">
+                    {% for key, provider in providers.items() %}
+                    <option value="{{ key }}" {% if key == current_provider %}selected{% endif %}>
+                        {{ provider.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="info-box provider-info">
+                <span id="provider-info-text"></span>
+                <a id="provider-docs-link" href="#" target="_blank">View documentation →</a>
+            </div>
+            
+            <div class="form-group">
+                <label for="client_id">Client ID</label>
+                <input type="text" id="client_id" name="client_id" placeholder="your_client_id" value="{{ current_client_id }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="client_secret">Client Secret</label>
+                <input type="password" id="client_secret" name="client_secret" placeholder="your_client_secret" value="{{ current_client_secret }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="redirect_uri">Redirect URI</label>
+                <input type="text" id="redirect_uri" name="redirect_uri" placeholder="http://localhost:5000/callback" value="{{ redirect_uri }}" required>
+                <small class="form-hint">Set this as the callback URL in your OAuth app settings</small>
+            </div>
+
+            <div class="form-group">
+                <label for="scope">Scope (optional)</label>
+                <input type="text" id="scope" name="scope" placeholder="Leave empty for default" value="{{ current_scope }}">
+                <small class="form-hint">Leave empty to use provider defaults</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Configuration</button>
+        </form>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        const providers = {{ providers | tojson }};
+        
+        function updateProviderInfo() {
+            const select = document.getElementById('provider');
+            const provider = providers[select.value];
+            const infoText = document.getElementById('provider-info-text');
+            const docsLink = document.getElementById('provider-docs-link');
+            
+            infoText.textContent = `💡 Create an OAuth app at ${provider.name}: `;
+            docsLink.href = provider.docs_url;
+        }
+        
+        // Initialize on load
+        updateProviderInfo();
+    </script>
+</body>
+</html>
