@@ -9,6 +9,8 @@ dotenv.load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
 
+TOKEN_STORE = {}
+
 # OAuth provider configurations
 PROVIDERS = {
     'github': {
@@ -194,6 +196,14 @@ def callback():
     
     if not access_token:
         return f"Failed to get access token: {token_response_data}", 400
+
+    # Store token using the API key
+    expected_key = os.getenv("OAUTH_PROXY_API_KEY")
+    if expected_key:
+        TOKEN_STORE[expected_key] = {
+            "access_token": access_token,
+            "provider": config['provider']
+        }
     
     # Store token in session
     session["access_token"] = access_token
@@ -235,14 +245,15 @@ def get_token():
             return jsonify({"error": "API key authentication not configured"}), 500
         if api_key != expected_key:
             return jsonify({"error": "Invalid API key"}), 401
-        # API key valid - return token from session
-        token = session.get("access_token")
-        if not token:
-            return jsonify({"error": "Not authenticated"}), 401
-        config = get_config()
+        
+        stored_data = TOKEN_STORE.get(api_key)
+        if not stored_data:
+            # Token hasn't been saved yet (user hasn't logged in via browser since last restart)
+            return jsonify({"error": "Not authenticated. Login required via browser."}), 401
+
         return jsonify({
-            "access_token": token,
-            "provider": config['provider']
+            "access_token": stored_data['access_token'],
+            "provider": stored_data['provider']
         })
     
     # Fall back to session-based auth
@@ -268,5 +279,5 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     print(f"🚀 OAuth Proxy running on port {port}")
     print(f"📝 Visit http://localhost:{port} to login")
-    print(f"⚙️  Visit http://localhost:{port}/config to configure credentials")
+    print(f"⚙️ Visit http://localhost:{port}/config to configure credentials")
     app.run(host="0.0.0.0", port=port, debug=os.getenv("DEBUG", "False") == "True")
