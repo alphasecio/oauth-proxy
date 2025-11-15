@@ -26,11 +26,11 @@ PROVIDERS = {
         'docs_url': 'https://console.cloud.google.com/apis/credentials'
     },
     'microsoft': {
-        'name': 'Microsoft',
+        'name': 'Microsoft Entra ID',
         'auth_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
         'token_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
         'default_scope': 'openid email profile',
-        'docs_url': 'https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade'
+        'docs_url': 'https://entra.microsoft.com/#home'
     },
     'gitlab': {
         'name': 'GitLab',
@@ -38,6 +38,20 @@ PROVIDERS = {
         'token_url': 'https://gitlab.com/oauth/token',
         'default_scope': 'read_user',
         'docs_url': 'https://gitlab.com/-/profile/applications'
+    },
+    'linkedin': {
+        'name': 'LinkedIn',
+        'auth_url': 'https://www.linkedin.com/oauth/v2/authorization',
+        'token_url': 'https://www.linkedin.com/oauth/v2/accessToken',
+        'default_scope': 'openid profile email',
+        'docs_url': 'https://www.linkedin.com/developers/apps'
+    },
+    'dropbox': {
+        'name': 'Dropbox',
+        'auth_url': 'https://www.dropbox.com/oauth2/authorize',
+        'token_url': 'https://api.dropboxapi.com/oauth2/token',
+        'default_scope': 'account_info.read',
+        'docs_url': 'https://www.dropbox.com/developers/apps'
     },
     'discord': {
         'name': 'Discord',
