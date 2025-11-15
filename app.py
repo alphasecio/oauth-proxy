@@ -216,6 +216,12 @@ def logout():
     """Clear session and logout."""
     # Keep OAuth config but clear token
     config = get_config()
+
+    # Clear token from TOKEN_STORE
+    expected_key = os.getenv("OAUTH_PROXY_API_KEY")
+    if expected_key and expected_key in TOKEN_STORE:
+        del TOKEN_STORE[expected_key]
+        
     session.clear()
     if config['client_id']:
         session['oauth_client_id'] = config['client_id']
