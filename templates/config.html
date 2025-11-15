@@ -50,6 +50,21 @@
                 <input type="text" id="scope" name="scope" placeholder="Leave empty for default" value="{{ current_scope }}">
                 <small class="form-hint">Leave empty to use provider defaults</small>
             </div>
+
+            <!-- Custom provider URL fields (hidden by default) -->
+            <div id="custom-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="custom_auth_url">Authorization URL</label>
+                    <input type="text" id="custom_auth_url" name="custom_auth_url" placeholder="https://your-auth-server.com/oauth/authorize" value="{{ custom_auth_url }}">
+                    <small class="form-hint">OAuth 2.0 authorization endpoint</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="custom_token_url">Token URL</label>
+                    <input type="text" id="custom_token_url" name="custom_token_url" placeholder="https://your-auth-server.com/oauth/token" value="{{ custom_token_url }}">
+                    <small class="form-hint">OAuth 2.0 token endpoint</small>
+                </div>
+            </div>
             
             <button type="submit" class="btn btn-primary">Save Configuration</button>
         </form>
@@ -65,9 +80,19 @@
             const provider = providers[select.value];
             const infoText = document.getElementById('provider-info-text');
             const docsLink = document.getElementById('provider-docs-link');
+            const customFields = document.getElementById('custom-fields');
             
-            infoText.textContent = `💡 Create an OAuth app at ${provider.name}: `;
-            docsLink.href = provider.docs_url;
+            // Show/hide custom fields based on provider
+            if (select.value === 'custom') {
+                customFields.style.display = 'block';
+                infoText.textContent = '💡 Enter your custom OAuth 2.0 provider URLs below';
+                docsLink.style.display = 'none';
+            } else {
+                customFields.style.display = 'none';
+                infoText.textContent = `💡 Create an OAuth app at ${provider.name}: `;
+                docsLink.style.display = 'inline-block';
+                docsLink.href = provider.docs_url;
+            }
         }
         
         // Initialize on load
