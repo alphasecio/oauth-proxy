@@ -221,11 +221,39 @@ def logout():
 
 @app.route("/api/token")
 def get_token():
-    """API endpoint to get current user's token."""
+    """API endpoint to get current user's token.
+    
+    Supports two authentication methods:
+    1. Session-based (browser/same-domain requests)
+    2. API key-based (CLI/server applications via X-API-Key header)
+    """
+    # Try API key authentication first
+    api_key = request.headers.get('X-API-Key')
+    if api_key:
+        expected_key = os.getenv("OAUTH_PROXY_API_KEY")
+        if not expected_key:
+            return jsonify({"error": "API key authentication not configured"}), 500
+        if api_key != expected_key:
+            return jsonify({"error": "Invalid API key"}), 401
+        # API key valid - return token from session
+        token = session.get("access_token")
+        if not token:
+            return jsonify({"error": "Not authenticated"}), 401
+        config = get_config()
+        return jsonify({
+            "access_token": token,
+            "provider": config['provider']
+        })
+    
+    # Fall back to session-based auth
     token = session.get("access_token")
     if not token:
         return jsonify({"error": "Not authenticated"}), 401
-    return jsonify({"access_token": token})
+    config = get_config()
+    return jsonify({
+        "access_token": token,
+        "provider": config['provider']
+    })
 
 @app.route("/api/status")
 def status():
