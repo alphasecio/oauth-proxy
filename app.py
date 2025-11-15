@@ -71,7 +71,9 @@ def get_config():
         'client_secret': session.get('oauth_client_secret') or os.getenv("OAUTH_CLIENT_SECRET", ""),
         'redirect_uri': session.get('redirect_uri') or os.getenv("REDIRECT_URI", "http://localhost:5000/callback"),
         'provider': session.get('oauth_provider') or os.getenv("OAUTH_PROVIDER", "github"),
-        'scope': session.get('oauth_scope') or os.getenv("OAUTH_SCOPE", "")
+        'scope': session.get('oauth_scope') or os.getenv("OAUTH_SCOPE", ""),
+        'custom_auth_url': session.get('custom_auth_url') or os.getenv("CUSTOM_AUTH_URL", ""),
+        'custom_token_url': session.get('custom_token_url') or os.getenv("CUSTOM_TOKEN_URL", "")
     }
 
 @app.route("/")
@@ -100,6 +102,9 @@ def config():
         session['redirect_uri'] = request.form.get('redirect_uri', '').strip()
         session['oauth_provider'] = provider
         session['oauth_scope'] = request.form.get('scope', '').strip()
+        if provider == 'custom':
+            session['custom_auth_url'] = request.form.get('custom_auth_url', '').strip()
+            session['custom_token_url'] = request.form.get('custom_token_url', '').strip()
         return redirect("/")
     
     config = get_config()
@@ -113,6 +118,8 @@ def config():
         redirect_uri=config['redirect_uri'],
         current_provider=provider,
         current_scope=config['scope'] or provider_config['default_scope'],
+        custom_auth_url=config.get('custom_auth_url', ''),
+        custom_token_url=config.get('custom_token_url', ''),
         providers=PROVIDERS
     )
 
@@ -127,6 +134,14 @@ def login():
     provider_config = PROVIDERS.get(config['provider'])
     if not provider_config:
         return "Invalid provider", 400
+
+    # Use custom URLs if provider is 'custom'
+    if config['provider'] == 'custom':
+        if not config.get('custom_auth_url'):
+            return "Custom provider requires authorization URL", 400
+        auth_url_base = config['custom_auth_url']
+    else:
+        auth_url_base = provider_config['auth_url']
     
     # Generate random state for security
     state = secrets.token_urlsafe(32)
