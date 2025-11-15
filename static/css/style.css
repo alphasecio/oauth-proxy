@@ -119,6 +119,7 @@ h1 {
 
 .btn {
     width: 100%;
+    max-width: 280px;
     padding: 14px;
     border: none;
     border-radius: 8px;
@@ -129,6 +130,7 @@ h1 {
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    margin: 0 auto;
 }
 
 .btn-primary {
