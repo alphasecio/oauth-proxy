@@ -163,7 +163,7 @@ def login():
     if config['provider'] == 'google':
         auth_params['access_type'] = 'offline'
     
-    auth_url = provider_config['auth_url'] + '?' + '&'.join(
+    auth_url = auth_url_base + '?' + '&'.join(
         f"{k}={v}" for k, v in auth_params.items()
     )
     
@@ -177,6 +177,14 @@ def callback():
     
     if not provider_config:
         return "Invalid provider", 400
+
+    # Use custom token URL if provider is 'custom'
+    if config['provider'] == 'custom':
+        if not config.get('custom_token_url'):
+            return "Custom provider requires token URL", 400
+        token_url = config['custom_token_url']
+    else:
+        token_url = provider_config['token_url']
     
     # Verify state to prevent CSRF
     state = request.args.get("state")
@@ -201,7 +209,7 @@ def callback():
     
     # Exchange code for access token
     token_response = requests.post(
-        provider_config['token_url'],
+        token_url,
         headers=headers,
         data=token_data
     )
