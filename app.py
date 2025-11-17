@@ -28,7 +28,7 @@ PROVIDERS = {
         'docs_url': 'https://console.cloud.google.com/apis/credentials'
     },
     'microsoft': {
-        'name': 'Microsoft Entra ID',
+        'name': 'Microsoft',
         'auth_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
         'token_url': 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
         'default_scope': 'openid email profile',
@@ -61,6 +61,13 @@ PROVIDERS = {
         'token_url': 'https://discord.com/api/oauth2/token',
         'default_scope': 'identify email',
         'docs_url': 'https://discord.com/developers/applications'
+    },
+    'custom': {
+        'name': 'Custom',
+        'auth_url': '',
+        'token_url': '',
+        'default_scope': '',
+        'docs_url': '#'
     }
 }
 
