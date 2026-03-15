@@ -3,11 +3,20 @@ import dotenv
 import secrets
 import requests
 from flask import Flask, request, redirect, session, jsonify, render_template
+from flask_cors import CORS
 
 dotenv.load_dotenv()
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
+
+app.config.update(
+    SESSION_COOKIE_SECURE=True,      # Only send cookie over HTTPS
+    SESSION_COOKIE_HTTPONLY=True,    # Prevent JavaScript access to cookie
+    SESSION_COOKIE_SAMESITE='Lax',   # CSRF protection
+    PERMANENT_SESSION_LIFETIME=3600  # Session expires after 1 hour
+)
 
 TOKEN_STORE = {}
 
@@ -265,6 +274,11 @@ def logout():
         session['oauth_scope'] = config['scope']
     return redirect("/")
 
+@app.route("/health")
+def health():
+    """Health check endpoint for monitoring."""
+    return jsonify({"status": "ok", "service": "oauth-proxy"})
+
 @app.route("/api/token")
 def get_token():
     """API endpoint to get current user's token.
@@ -284,8 +298,11 @@ def get_token():
         
         stored_data = TOKEN_STORE.get(api_key)
         if not stored_data:
-            # Token hasn't been saved yet (user hasn't logged in via browser since last restart)
-            return jsonify({"error": "Not authenticated. Login required via browser."}), 401
+            return jsonify({
+                "error": "Not authenticated", 
+                "message": "Please visit the OAuth proxy in your browser to authenticate first.",
+                "login_url": request.host_url + "login"
+            }), 401
 
         return jsonify({
             "access_token": stored_data['access_token'],
@@ -295,7 +312,11 @@ def get_token():
     # Fall back to session-based auth
     token = session.get("access_token")
     if not token:
-        return jsonify({"error": "Not authenticated"}), 401
+        return jsonify({
+            "error": "Not authenticated",
+            "login_url": request.host_url + "login"
+        }), 401
+    
     config = get_config()
     return jsonify({
         "access_token": token,
