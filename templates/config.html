@@ -51,18 +51,36 @@
                 <small class="form-hint">Leave empty to use provider defaults</small>
             </div>
 
-            <!-- Custom provider URL fields (hidden by default) -->
-            <div id="custom-fields" style="display: none;">
+            <!-- Custom URL fields — shown for auth0 and custom providers -->
+            <div id="custom-url-fields" style="display: none;">
                 <div class="form-group">
                     <label for="custom_auth_url">Authorization URL</label>
-                    <input type="text" id="custom_auth_url" name="custom_auth_url" placeholder="https://your-auth-server.com/oauth/authorize" value="{{ custom_auth_url }}">
-                    <small class="form-hint">OAuth 2.0 authorization endpoint</small>
+                    <input type="text" id="custom_auth_url" name="custom_auth_url"
+                           placeholder="https://your-tenant.auth0.com/authorize"
+                           value="{{ custom_auth_url }}">
+                    <small class="form-hint" id="auth-url-hint">OAuth 2.0 authorization endpoint</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="custom_token_url">Token URL</label>
-                    <input type="text" id="custom_token_url" name="custom_token_url" placeholder="https://your-auth-server.com/oauth/token" value="{{ custom_token_url }}">
+                    <input type="text" id="custom_token_url" name="custom_token_url"
+                           placeholder="https://your-tenant.auth0.com/oauth/token"
+                           value="{{ custom_token_url }}">
                     <small class="form-hint">OAuth 2.0 token endpoint</small>
+                </div>
+            </div>
+ 
+            <!-- Audience field — shown for auth0 and custom providers -->
+            <div id="audience-field" style="display: none;">
+                <div class="form-group">
+                    <label for="oauth_audience">Audience</label>
+                    <input type="text" id="oauth_audience" name="oauth_audience"
+                           placeholder="https://your-api.example.com"
+                           value="{{ oauth_audience }}">
+                    <small class="form-hint">
+                        The API identifier (audience) registered in your Auth0 tenant.
+                        Required to receive a JWT access token scoped to your API.
+                    </small>
                 </div>
             </div>
             
@@ -77,22 +95,39 @@
         
         function updateProviderInfo() {
             const select = document.getElementById('provider');
-            const provider = providers[select.value];
+            const key = select.value;
+            const provider = providers[key];
             const infoText = document.getElementById('provider-info-text');
             const docsLink = document.getElementById('provider-docs-link');
-            const customFields = document.getElementById('custom-fields');
-            
-            // Show/hide custom fields based on provider
-            if (select.value === 'custom') {
-                customFields.style.display = 'block';
-                infoText.textContent = '💡 Enter your custom OAuth 2.0 provider URLs below';
-                docsLink.style.display = 'none';
-            } else {
-                customFields.style.display = 'none';
+            const customUrlFields = document.getElementById('custom-url-fields');
+            const audienceField = document.getElementById('audience-field');
+            const authUrlHint = document.getElementById('auth-url-hint');
+ 
+            // Update info box
+            if (provider.docs_url && provider.docs_url !== '#') {
                 infoText.textContent = `💡 Create an OAuth app at ${provider.name}: `;
-                docsLink.style.display = 'inline-block';
                 docsLink.href = provider.docs_url;
+                docsLink.style.display = 'inline-block';
+            } else {
+                infoText.textContent = '💡 Enter your custom OAuth 2.0 provider URLs below.';
+                docsLink.style.display = 'none';
             }
+ 
+            // Show/hide custom URL fields
+            if (provider.supports_custom_urls) {
+                customUrlFields.style.display = 'block';
+                // Tailor the placeholder hint for Auth0
+                if (key === 'auth0') {
+                    authUrlHint.textContent = 'e.g. https://your-tenant.auth0.com/authorize';
+                } else {
+                    authUrlHint.textContent = 'OAuth 2.0 authorization endpoint';
+                }
+            } else {
+                customUrlFields.style.display = 'none';
+            }
+ 
+            // Show/hide audience field
+            audienceField.style.display = provider.supports_audience ? 'block' : 'none';
         }
         
         // Initialize on load
