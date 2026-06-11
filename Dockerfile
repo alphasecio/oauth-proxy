@@ -2,15 +2,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
 COPY . .
 
-# Expose port
+RUN useradd --create-home --uid 10001 appuser
+USER appuser
+
 EXPOSE 5000
 
-# Use gunicorn for production
-CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 app:app
+CMD gunicorn --bind 0.0.0.0:${PORT:-5000} --workers ${WEB_CONCURRENCY:-1} --timeout 30 app:app
